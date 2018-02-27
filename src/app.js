@@ -3,29 +3,39 @@ const express = require('express');
 const GitHubApi = require('github');
 const nacl = require('tweetnacl');
 nacl.util = require('tweetnacl-util');
-
 const DotEnv = require('dotenv');
 
-const username = 'yourusername';  // TODO: your GitHub username here
+const username = 'HTMLGhozt';  // TODO: your GitHub username here
 const github = new GitHubApi({ debug: true });
 const server = express();
 
 // Set it to be able to create gists
 DotEnv.config();
-
+let clientId = '';
 github.authenticate({
   type: 'oauth',
-  token: process.env.GITHUB_TOKEN
+  token: process.env.GITHUB_TOKEN,
 });
 // Set up the encryption - use process.env.SECRET_KEY if it exists
 // TODO either use or generate a new 32 byte key
 
 server.get('/', (req, res) => {
   // TODO Return a response that documents the other routes/operations available
+  github.users
+    .getForUser({ username })
+    .then(({ data }) => {
+      res.json(data);
+      clientId = data.id;
+    });
 });
 
 server.get('/gists', (req, res) => {
   // TODO Retrieve a list of all gists for the currently authed user
+  github.gists
+    .getForUser({ username })
+    .then(({ data }) => {
+      res.json(data);
+    });
 });
 
 server.get('/key', (req, res) => {
