@@ -4,17 +4,19 @@ const GitHubApi = require('github');
 const nacl = require('tweetnacl');
 nacl.util = require('tweetnacl-util');
 
+const DotEnv = require('dotenv');
+
 const username = 'yourusername';  // TODO: your GitHub username here
 const github = new GitHubApi({ debug: true });
 const server = express();
 
-// Generate an access token: https://github.com/settings/tokens
 // Set it to be able to create gists
+DotEnv.config();
+
 github.authenticate({
   type: 'oauth',
   token: process.env.GITHUB_TOKEN
 });
-
 // Set up the encryption - use process.env.SECRET_KEY if it exists
 // TODO either use or generate a new 32 byte key
 
